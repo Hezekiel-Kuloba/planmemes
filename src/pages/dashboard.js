@@ -1,10 +1,13 @@
-import React from 'react'
-import Feed from '../components/newsfeed/feed'
+import Feed from "../components/newsfeed/Feed";
 
 function Dashboard() {
     return (
         <div>
-            <Feed/>
+            <div>
+                {/* <Header /> */}
+                <h1>Heyoooooo</h1>
+                <Feed/>
+            </div>
         </div>
     )
 }

@@ -1,11 +1,10 @@
 import { ChatAltIcon, ShareIcon, ThumbUpIcon } from "@heroicons/react/outline";
 
-function Post({ name, message, email, postImage, image, timestamp }) {
+function Post({ name, message, email, postImage, timestamp }) {
   return (
     <div className="flex flex-col">
       <div className="p-5 bg-white mt-5 rounded-t-2xl shadow-sm">
         <div className="flex items-center space-x-2">
-          <img className="rounded-full" src={image} width={40} height={40} />
           <div>
             <p className="font-medium">{name}</p>
             {timestamp ? (
@@ -22,7 +21,7 @@ function Post({ name, message, email, postImage, image, timestamp }) {
       </div>
       {postImage && (
         <div className="relative h-56 md:h-96 bg-white">
-          <image src={postImage} objectFit="cover" layout="fill" />
+          <img src={postImage} objectFit="cover" layout="fill" />
         </div>
       )}
 

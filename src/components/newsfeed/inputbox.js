@@ -1,32 +1,28 @@
 import { EmojiHappyIcon } from "@heroicons/react/outline";
 import { CameraIcon, VideoCameraIcon } from "@heroicons/react/solid";
-import UserContext from '../context/user';
-import { useRef, useState,useContext } from "react";
-import FirebaseContext from '../context/firebase';
-import useUser from '../hooks/use-user';
+import { useRef, useState, useContext } from "react";
+import { db, storage } from "../../lib/firebase";
+import firebase from "firebase";
+import UserContext from "../../context/UserContext";
 
 function InputBox() {
-  const { user: loggedInUser } = useContext(UserContext); 
-  const { user } = useUser(loggedInUser?.uid);
-  const { firebase } = useContext(FirebaseContext);
-  const { storage } = useContext(FirebaseContext);
   const inputRef = useRef(null);
   const [imageToPost, setImageToPost] = useState(null);
   const filepickerRef = useRef(null);
+  const {
+    user: { displayName, email  }
+  } = useContext(UserContext);
 
   const sendPost = (e) => {
     e.preventDefault();
 
-    if (!inputRef.current.value) {
-    try {
-    await firebase
-    .firestore()
-    .collection("posts")
+    if (!inputRef.current.value) return;
+
+    db.collection("posts")
       .add({
         message: inputRef.current.value,
-        name: user.name,
-        email:user.email,
-        image:user.image,
+        name: displayName,
+        email: email,
         timestamp: firebase.firestore.FieldValue.serverTimestamp(),
       })
       .then((doc) => {
@@ -62,7 +58,7 @@ function InputBox() {
           );
         }
       });
-    };
+
     inputRef.current.value = "";
   };
 
@@ -84,18 +80,19 @@ function InputBox() {
   return (
     <div className="bg-white p-2 rounded-2xl shadow-md text-gray-500 font-medium mt-6">
       <div className="flex space-x-4 p-4 items-center">
-        <image
+        {/* <img
           className="rounded-full"
-          src={user.image}
+          src={session.user.image}
           width={40}
           height={40}
           layout="fixed"
-        />
+        /> */}
         <form className="flex flex-1">
           <input
             className="rounded-full h-12 bg-gray-100 flex-grow px-5 focus:outline-none"
             type="text"
-            placeholder={`What's on your mind, ${user.name}?`}
+            // placeholder={`What's on your mind,*/} ${session.user.name}?`}
+            placeholder={`What's on your mind, ${displayName}?`}
             ref={inputRef}
           />
           <button hidden onClick={sendPost}>

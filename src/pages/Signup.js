@@ -1,13 +1,12 @@
-import { useState, useContext, useEffect } from 'react';
-import { Link, useHistory } from 'react-router-dom';
-import FirebaseContext from '../context/firebase';
-import * as ROUTES from '../constants/routes';
+//send data to firestore
+import { useState, useEffect } from 'react';
+import { db, storage, auth } from "../lib/firebase"
 import { doesUsernameExist } from '../services/firebase';
+import { Link, useHistory } from 'react-router-dom';
+import * as ROUTES from '../constants/Routes'
 
-export default function SignUp() {
+function Practise() {
   const history = useHistory();
-  const { firebase } = useContext(FirebaseContext);
-
   const [username, setUsername] = useState('');
   const [fullName, setFullName] = useState('');
   const [emailAddress, setEmailAddress] = useState('');
@@ -18,13 +17,12 @@ export default function SignUp() {
 
   const handleSignUp = async (event) => {
     event.preventDefault();
-
+    // The await operator is used to wait for a Promise. It can only be used inside an async function.
     const usernameExists = await doesUsernameExist(username);
     if (!usernameExists) {
       try {
-        const createdUserResult = await firebase
-          .auth()
-          .createUserWithEmailAndPassword(emailAddress, password);
+        const createdUserResult = await
+          auth.createUserWithEmailAndPassword(emailAddress, password);
 
         // authentication
         // -> emailAddress & password & username (displayName)
@@ -33,8 +31,7 @@ export default function SignUp() {
         });
 
         // firebase user collection (create a document)
-        await firebase
-          .firestore()
+        await db
           .collection('users')
           .add({
             userId: createdUserResult.user.uid,
@@ -58,11 +55,6 @@ export default function SignUp() {
       setError('That username is already taken, please try another.');
     }
   };
-
-  useEffect(() => {
-    document.title = 'Sign Up - Instagram';
-  }, []);
-
   return (
     <div className="container flex mx-auto max-w-screen-md items-center h-screen">
       <div className="flex w-3/5">
@@ -113,7 +105,7 @@ export default function SignUp() {
               disabled={isInvalid}
               type="submit"
               className={`bg-blue-medium text-white w-full rounded h-8 font-bold
-            ${isInvalid && 'opacity-50'}`}
+              ${isInvalid && 'opacity-50'}`}
             >
               Sign Up
             </button>
@@ -131,3 +123,5 @@ export default function SignUp() {
     </div>
   );
 }
+
+export default Practise

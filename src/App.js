@@ -1,17 +1,17 @@
-import { lazy, Suspense } from 'react';
+import React, { lazy, Suspense } from 'react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import ReactLoader from './components/loader';
-import * as ROUTES from './constants/routes';
-import UserContext from './context/user';
+import * as ROUTES from './constants/Routes';
+import UserContext from './context/UserContext';
 import useAuthListener from './hooks/use-auth-listener';
 
-import ProtectedRoute from './helpers/protected-route';
+const Login = lazy(() => import('./pages/Login'));
+const SignUp = lazy(() => import('./pages/Signup'));
+const Dashboard = lazy(() => import('./pages/Dashboard'));
 
-const Login = lazy(() => import('./pages/login'));
-const SignUp = lazy(() => import('./pages/sign-up'));
-const Dashboard = lazy(() => import('./pages/dashboard'));
 
-export default function App() {
+function App() {
+
   const { user } = useAuthListener();
 
   return (
@@ -21,12 +21,14 @@ export default function App() {
           <Switch>
             <Route path={ROUTES.LOGIN} component={Login} />
             <Route path={ROUTES.SIGN_UP} component={SignUp} />
-            <ProtectedRoute user={user} path={ROUTES.DASHBOARD} exact>
+            <Route exact path={ROUTES.DASHBOARD} >
               <Dashboard />
-            </ProtectedRoute>
+            </Route>
           </Switch>
         </Suspense>
       </Router>
     </UserContext.Provider>
   )
 }
+
+export default App
